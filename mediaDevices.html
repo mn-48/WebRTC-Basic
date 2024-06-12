@@ -8,8 +8,16 @@
 <body>
     Hello world!
 
+    <select id="availableCameras">
+        <!-- Options will be dynamically added using JavaScript -->
+        <!-- For initial options, you can include them here if needed -->
+        <!-- <option value="camera1">Camera 1</option> -->
+        <!-- <option value="camera2">Camera 2</option> -->
+    </select>
+
     <script>
 
+        // media devices ----------------------------------------
         const constraints = {
             'video': true,
             'audio': true
@@ -21,6 +29,19 @@
             .catch(error => {
                 console.error('Error accessing media devices.', error);
             });
+
+        // Querying media devices ----------------------------------------
+            function getConnectedDevices(type, callback) {
+                navigator.mediaDevices.enumerateDevices()
+                    .then(devices => {
+                        const filtered = devices.filter(device => device.kind === type);
+                        callback(filtered);
+                    });
+            }
+            
+            getConnectedDevices('videoinput', cameras => console.log('Cameras found', cameras));
+
+        
 
     </script>
     
