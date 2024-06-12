@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC</title>
+</head>
+<body>
+    Hello world!
+
+    <select id="availableCameras">
+       
+    </select>
+
+    <script>
+        
+        // Updates the select element with the provided set of cameras
+        function updateCameraList(cameras) {
+            const listElement = document.querySelector('select#availableCameras');
+            listElement.innerHTML = '';
+            console.log("cameras: ", cameras);
+            cameras.map(camera => {
+                const cameraOption = document.createElement('option');
+                cameraOption.label = camera.label;
+                cameraOption.value = camera.deviceId;
+                return cameraOption; // Add this line to return cameraOption
+            }).forEach(cameraOption => listElement.add(cameraOption));
+        }
+
+        // Fetch an array of devices of a certain type
+        async function getConnectedDevices(type) {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            console.log("devices: ", devices);
+            return devices.filter(device => device.kind === type);
+        }
+
+        // Get the initial set of cameras connected
+        getConnectedDevices('videoinput').then(videoCameras => {
+            console.log("videoCameras: ", videoCameras);
+            updateCameraList(videoCameras);
+        });
+
+        // Listen for changes to media devices and update the list accordingly
+        navigator.mediaDevices.addEventListener('devicechange', async event => {
+            const newCameraList = await getConnectedDevices('videoinput');
+            updateCameraList(newCameraList);
+        });
+    </script>
+</body>
+</html>
